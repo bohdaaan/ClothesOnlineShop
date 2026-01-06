@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalog — Company</title>
+  <style>
+    /* =========================
+       BASE / RESET
+    ========================== */
+    :root{
+      --bg:#ffffff;
+      --text:#0b0b0b;
+      --muted:#6b6b6b;
+      --line:#e8e8e8;
+      --soft:#f6f6f6;
+      --shadow: 0 14px 40px rgba(0,0,0,.08);
+      --radius:18px;
+      --radius-lg:24px;
+      --max:1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.4;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{max-width:var(--max); margin:0 auto; padding:0 20px}
+
+    /* =========================
+       HEADER (simple)
+    ========================== */
+    header{
+      position:sticky; top:0;
+      background:rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      z-index:50;
+    }
+    .header-row{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      font-weight:900;
+      letter-spacing:-.6px;
+      font-size:14px;
+      line-height:1.05;
+      text-transform:uppercase;
+    }
+    .nav{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+    .nav a{
+      padding:8px 2px;
+      border-bottom:1px solid transparent;
+      transition:.2s;
+      color:#111;
+    }
+    .nav a:hover{border-bottom-color:#111}
+    .nav a.active{border-bottom-color:#111}
+
+    .header-actions{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+    .header-actions a{opacity:.9}
+    .header-actions a:hover{opacity:1}
+
+    /* =========================
+       CATALOG TOP BAR
+    ========================== */
+    .catalog-hero{
+      padding:34px 0 10px;
+      text-align:center;
+    }
+    .catalog-title{
+      font-size:40px;
+      font-weight:900;
+      letter-spacing:-1.2px;
+      margin:0;
+    }
+    .catalog-sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .toolbar{
+      margin-top:26px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:14px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,.05);
+    }
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:260px;
+      flex:1;
+    }
+    .search input{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      outline:none;
+      font-size:14px;
+      background:var(--soft);
+      transition:.2s;
+    }
+    .search input:focus{
+      background:#fff;
+      border-color:#cfcfcf;
+      box-shadow: 0 0 0 4px rgba(0,0,0,.05);
+    }
+    .chip-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.2s;
+      user-select:none;
+    }
+    .chip:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.07);
+    }
+    .chip.active{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+
+    .sort{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+    .sort select{
+      padding:10px 14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      font-size:13px;
+      outline:none;
+    }
+
+    /* =========================
+       GRID + CARD
+    ========================== */
+    .grid{
+      padding:26px 0 90px;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:26px;
+    }
+
+    @media (max-width: 1100px){
+      .grid{grid-template-columns: repeat(3, 1fr);}
+    }
+    @media (max-width: 820px){
+      .grid{grid-template-columns: repeat(2, 1fr);}
+      .catalog-title{font-size:34px}
+    }
+    @media (max-width: 520px){
+      .grid{grid-template-columns: 1fr;}
+      .toolbar{padding:14px}
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      background:#fff;
+      transition:.28s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,.04);
+    }
+    .card:hover{
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+    .card-media{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      background: #f0f0f0;
+      position:relative;
+      overflow:hidden;
+    }
+    .card-media img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transition: transform .35s ease;
+    }
+    .card:hover .card-media img{
+      transform: scale(1.04);
+    }
+
+    .badge{
+      position:absolute;
+      top:14px;
+      left:14px;
+      background:rgba(255,255,255,.85);
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+    }
+
+    .card-body{
+      padding:16px 16px 18px;
+      text-align:center;
+    }
+    .name{
+      margin:0;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+    }
+    .meta{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+    .price{
+      margin:10px 0 0;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .card-actions{
+      padding:0 16px 16px;
+    }
+    .btn{
+      display:block;
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #111;
+      background:#111;
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      transition:.2s;
+      text-align:center;
+    }
+    .btn:hover{
+      background:#1d1d1d;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(0,0,0,.16);
+    }
+
+    /* =========================
+       EMPTY STATE
+    ========================== */
+    .empty{
+      padding:80px 0 120px;
+      text-align:center;
+      color:var(--muted);
+    }
+    .empty h2{
+      margin:0 0 10px;
+      color:#111;
+      font-size:26px;
+      font-weight:900;
+    }
+
+    /* =========================
+       FOOTER
+    ========================== */
+    footer{
+      border-top:1px solid var(--line);
+      padding:34px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .footer-row{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .footer-links{
+      display:flex; gap:14px; flex-wrap:wrap;
+    }
+    .footer-links a:hover{color:#111}
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <div class="header-row">
+        <a class="brand" href="#">
+          Company<br/>Catalog
+        </a>
+
+        <nav class="nav">
+          <a class="active" href="#">All</a>
+          <a href="#">Shoes</a>
+          <a href="#">Jackets</a>
+          <a href="#">Accessories</a>
+        </nav>
+
+        <div class="header-actions">
+          <a href="#">Search</a>
+          <a href="#">Account</a>
+          <a href="#">Cart (0)</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE -->
+  <main class="container">
+
+    <section class="catalog-hero">
+      <h1 class="catalog-title">All Products</h1>
+      <p class="catalog-sub">Discover premium products with modern design</p>
+
+      <div class="toolbar">
+        <form class="search" action="#" method="get">
+          <input type="text" name="q" placeholder="Search products by name, color..." />
+        </form>
+
+        <div class="chip-row">
+          <div class="chip active">All</div>
+          <div class="chip">Black</div>
+          <div class="chip">White</div>
+          <div class="chip">Gray</div>
+
+          <div class="sort">
+            <span style="color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase;">Sort</span>
+            <select>
+              <option>Newest</option>
+              <option>Price: Low → High</option>
+              <option>Price: High → Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS GRID -->
+    <section class="grid">
+      <!-- Card 1 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">New</span>
+          <img src="https://picsum.photos/600?random=1" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Minimal Jacket</p>
+          <p class="meta">Black • Outerwear</p>
+          <p class="price">€129.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">Limited</span>
+          <img src="https://picsum.photos/600?random=2" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Leather Shoes</p>
+          <p class="meta">White • Shoes</p>
+          <p class="price">€189.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">Hot</span>
+          <img src="https://picsum.photos/600?random=3" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Oversized Hoodie</p>
+          <p class="meta">Gray • Streetwear</p>
+          <p class="price">€99.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">Classic</span>
+          <img src="https://picsum.photos/600?random=4" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Silver Ring</p>
+          <p class="meta">Metal • Accessories</p>
+          <p class="price">€59.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">New</span>
+          <img src="https://picsum.photos/600?random=5" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Minimal Tee</p>
+          <p class="meta">White • Basics</p>
+          <p class="price">€39.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">Drop</span>
+          <img src="https://picsum.photos/600?random=6" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Cargo Pants</p>
+          <p class="meta">Black • Pants</p>
+          <p class="price">€119.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 7 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">Sale</span>
+          <img src="https://picsum.photos/600?random=7" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Wool Scarf</p>
+          <p class="meta">Gray • Accessories</p>
+          <p class="price">€49.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+
+      <!-- Card 8 -->
+      <article class="card">
+        <div class="card-media">
+          <span class="badge">New</span>
+          <img src="https://picsum.photos/600?random=8" alt="Product image">
+        </div>
+        <div class="card-body">
+          <p class="name">Modern Sneakers</p>
+          <p class="meta">White • Shoes</p>
+          <p class="price">€149.00</p>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="#">View product</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- EMPTY STATE (если нет продуктов — просто покажешь этот блок вместо grid) -->
+    <!--
+    <section class="empty">
+      <h2>No products found</h2>
+      <p>Try changing filters or search query.</p>
+    </section>
+    -->
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div>© 2026 Company. All rights reserved.</div>
+        <div class="footer-links">
+          <a href="#">Shipping</a>
+          <a href="#">Returns</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
